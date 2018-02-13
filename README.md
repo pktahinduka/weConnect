@@ -60,7 +60,7 @@ $ createdb users_dev
 $ createdb users_test
 ```
 
-For other databases modify the `instance/config.py`
+For other databases modify the `project/config.py`
 
 Migrations:
 ```
