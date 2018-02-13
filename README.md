@@ -29,7 +29,7 @@ Clone the repo:
 
 For HTTPS
 ```
-$ git clone https://github.com/NaiRobley/weConnect.git
+$ git clone https://github.com/pktahinduka/weConnect.git
 ```
 
 
