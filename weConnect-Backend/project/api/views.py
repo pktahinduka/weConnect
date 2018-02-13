@@ -5,6 +5,7 @@ from project.api.user_models import User
 from project.api.user_models import BlacklistToken
 from project.api.business_models import Business
 from project.api.review_models import Review
+from project.api.decorator import token_required
 from project import db
 from sqlalchemy import exc, or_
 
@@ -74,7 +75,8 @@ def add_user():
         return jsonify(response_object), 400
 
 @users_blueprint.route('/businesses', methods=['POST'])
-def add_business():
+@token_required
+def add_business(user_id):
     post_data = request.get_json()
     if not post_data:
         response_object = {
@@ -120,7 +122,8 @@ def add_business():
         return jsonify(response_object), 400
 
 @users_blueprint.route('/reviews', methods=['POST'])
-def add_review():
+@token_required
+def add_review(user_id):
     post_data = request.get_json()
     if not post_data:
         response_object = {
@@ -188,7 +191,8 @@ def get_single_user(user_id):
 
 
 @users_blueprint.route('/businesses/<biz_id>', methods=['GET'])
-def get_single_business(biz_id):
+@token_required
+def get_single_business(user_id, biz_id):
     """Get single business details"""
     response_object = {
         'status': 'fail',
@@ -236,7 +240,8 @@ def get_all_users():
     return jsonify(response_object), 200
 
 @users_blueprint.route('/businesses', methods=['GET'])
-def get_all_businesses():
+@token_required
+def get_all_businesses(user_id):
     """Get all businesses"""
     businesses = Business.query.all()
     businesses_list = []
@@ -260,7 +265,8 @@ def get_all_businesses():
     return jsonify(response_object), 200
 
 @users_blueprint.route('/reviews', methods=['GET'])
-def get_all_reviews():
+@token_required
+def get_all_reviews(user_id):
     """Get all reviews"""
     reviews = Review.query.all()
     reviews_list = []
@@ -281,6 +287,62 @@ def get_all_reviews():
     }
     return jsonify(response_object), 200
 
+@users_blueprint.route("/businesses/<biz_id>", methods=['PUT','DELETE'])
+@token_required
+def manipulate_a_business(biz_id, user_id, *args, **kwargs):
+    business = Business.query.filter_by(id=biz_id).first()
+    if not business:
+        response_object = {
+        'status': 'fail',
+        'message': 'Business does not exist'
+        }
+        return jsonify(response_object), 404
 
+    if request.method == "DELETE":
+        business.delete()
+        response_object = {
+        'status': 'success',
+        'message': 'A business has been successfully deleted'
+         }
+    
+        return jsonify(response_object), 204
+
+    elif request.method == "PUT":
+        all_businesses = Business.query.filter_by(id=biz_id).first()
+
+        name = request.get_json()['name']
+        category = request.get_json()['category']
+        addr = request.get_json()['addr']
+        desc = request.get_json()['desc']
+
+        business.business_name = name
+        business.business_category = category
+        business.business_addr = addr
+        business.business_desc = desc
+
+        business.save()
+
+        response = jsonify({
+            "id": business.id,
+            "name": business.business_name,
+            "category": business.business_category,
+            "address": business.business_addr, 
+            "date_created": business.created_at,
+            "created_by": business.created_by
+        })
+
+        response.status_code = 201
+        return response
+
+    else:
+        response = jsonify({
+            "message": "There is an existing business with the same name. Try again"
+                                })
+        response.status_code = 409
+        return response
+
+
+
+    
 
 

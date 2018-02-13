@@ -91,8 +91,15 @@ class AddItems extends Component {
       business_desc: this.state.business_desc,
       created_by: user_name,
     };
+
+    const jwtStr = window.localStorage.getItem('authToken');
     const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/businesses`
-    axios.post(url, data)
+    axios.post(url, data,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => {
       this.setState({
         formData: {business_name: '', business_category: '', business_addr: '', business_desc: '' },

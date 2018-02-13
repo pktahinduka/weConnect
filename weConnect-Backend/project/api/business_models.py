@@ -23,3 +23,17 @@ class Business(db.Model):
         self.business_desc = business_desc
         self.created_by = created_by
         self.created_at = datetime.datetime.now()
+
+    def delete(self):
+        """
+        Delete a business
+        """
+        db.session.delete(self)
+        db.session.commit()
+
+    def save(self):
+        """
+        Save a business into the db
+        """
+        db.session.add(self)
+        db.session.commit()

@@ -18,12 +18,19 @@ class Businesses extends Component {
   componentDidMount() {
     this.getBusinesses();
   };
+
   getBusinesses() {
-    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/businesses`)
+    const jwtStr = window.localStorage.getItem('authToken');
+    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/businesses`,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => { this.setState({ businesses: res.data.data.businesses });
         })
     .catch((err) => {  });
-
+    
 
   };
 

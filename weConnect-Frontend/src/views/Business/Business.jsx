@@ -39,15 +39,26 @@ class Business extends Component {
   };
 
   getBusinesses() {
-    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/businesses`)
+    const jwtStr = window.localStorage.getItem('authToken');
+    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/businesses`,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => { this.setState({ businesses: res.data.data.businesses });
         })
     .catch((err) => {  });
   };
 
   getReviews() {
-
-    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/reviews`)
+    const jwtStr = window.localStorage.getItem('authToken');
+    axios.get(`${process.env.REACT_APP_USERS_SERVICE_URL}/reviews`,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => { 
       this.setState({ reviews: res.data.data.reviews }); 
       })
@@ -56,13 +67,18 @@ class Business extends Component {
 
   addReview(event) {
     event.preventDefault();
-
+    const jwtStr = window.localStorage.getItem('authToken');
     const data = {
       business_name: this.state.business_name,
       review_text: this.state.review_text,
       created_by: this.state.created_by,
     };
-    axios.post(`${process.env.REACT_APP_USERS_SERVICE_URL}/reviews`, data)
+    axios.post(`${process.env.REACT_APP_USERS_SERVICE_URL}/reviews`, data,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => {
       this.getReviews();
     })
@@ -72,6 +88,7 @@ class Business extends Component {
   handleReviewFormSubmit(event) {
     event.preventDefault();
     
+    const jwtStr = window.localStorage.getItem('authToken');
     const user_name = window.localStorage.username;
     const business_name = window.localStorage.business;
 
@@ -81,7 +98,12 @@ class Business extends Component {
       created_by: user_name,
     };
     const url = `${process.env.REACT_APP_USERS_SERVICE_URL}/reviews`
-    axios.post(url, data)
+    axios.post(url, data,
+         {
+            'headers': {
+            'Authorization': 'Bearer ' + jwtStr
+            }
+         })
     .then((res) => {
       this.setState({
         formData: {business_name: '', review_text: '' },

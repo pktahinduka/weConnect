@@ -3,6 +3,7 @@ from project.tests.base import BaseTestCase
 from project.api.review_models import Review 
 from project import db, bcrypt
 from project.tests.utils import add_review
+from project.tests.utils import add_user
 
 
 
@@ -10,9 +11,23 @@ class TestReviewService(BaseTestCase):
 
     def test_add_review(self):
         """Ensure a new review can be added to the database."""
+
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
+
         with self.client:
             response = self.client.post(
                 '/reviews',
+                headers=dict(Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode())['auth_token']),
                 data=json.dumps(dict(
                     business_name='Drarter Homes',
                     review_text = 'I like the idea.',
@@ -28,9 +43,23 @@ class TestReviewService(BaseTestCase):
 
     def test_add_review_invalid_json(self):
         """Ensure error is thrown if the JSON object is empty."""
+
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
+
         with self.client:
             response = self.client.post(
             '/reviews',
+            headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']),
             data=json.dumps(dict()),
             content_type='application/json',
         )
@@ -41,9 +70,21 @@ class TestReviewService(BaseTestCase):
 
     def test_add_review_invalid_json_keys(self):
         """Ensure error is thrown if the JSON object does not have a business name key."""
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
         with self.client:
             response = self.client.post(
             '/reviews',
+            headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']),
             data=json.dumps(dict(review_text='I like the idea.')),
             content_type='application/json',
         )
@@ -54,9 +95,21 @@ class TestReviewService(BaseTestCase):
 
     def test_add_review_duplicate_review(self):
         """ Ensure error is thrown if the review already exists."""
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
         with self.client:
             self.client.post(
             '/reviews',
+            headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']),
             data=json.dumps(dict(
                 business_name='Drarter Homes',
                 review_text = 'I like the idea.',
@@ -66,6 +119,8 @@ class TestReviewService(BaseTestCase):
         )
             response = self.client.post(
             '/reviews',
+            headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']),
             data=json.dumps(dict(
                 business_name='Drarter Homes',
                 review_text = 'I like the idea.',
@@ -81,10 +136,22 @@ class TestReviewService(BaseTestCase):
 
     def test_all_reviews(self):
         """Ensure get all reviews behaves correctly."""
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
         add_review('Drarter Homes', 'Cool Stuff.','stillPeter')
         add_review('AfroDjango', 'Dream in Python','fletcher')
         with self.client:
-            response = self.client.get('/reviews')
+            response = self.client.get('/reviews',
+                       headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']))
             data = json.loads(response.data.decode())
             self.assertEqual(response.status_code, 200)
             self.assertEqual(len(data['data']['reviews']), 2)
@@ -100,9 +167,21 @@ class TestReviewService(BaseTestCase):
 
     def test_add_review_invalid_json_keys_no_author(self):
         """Ensure error is thrown if the JSON object does not have an author."""
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
         with self.client:
             response = self.client.post(
                 '/reviews',
+            headers=dict(Authorization='Bearer ' + json.loads(
+                resp_login.data.decode())['auth_token']),
                 data=json.dumps(dict(
                     business_name='Drarter Homes',
                     review_text='I like the idea.')),
