@@ -1,8 +1,0 @@
-flask-microservices-client@0.1.0 C:\Users\Madrara\Desktop\flask-microservices-client
-`-- react-router-dom@4.2.2 
-  +-- history@4.7.2 
-  | +-- resolve-pathname@2.2.0 
-  | `-- value-equal@0.4.0 
-  `-- react-router@4.2.0 
-    `-- hoist-non-react-statics@2.3.1 
-
