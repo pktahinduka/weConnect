@@ -8,6 +8,7 @@ service:
 
 install:
   - pip install -r requirements.txt
+  - pip install coveralls
 
 before_script:
   - export APP_SETTINGS="project.config.TestingConfig"
@@ -17,4 +18,6 @@ before_script:
   - python manage.py recreate_db
 
 script:
-  - python manage.py test
+  - python manage.py cov 
+after_success:
+  coveralls
