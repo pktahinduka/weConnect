@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/pktahinduka/weConnect.svg?branch=master)](https://travis-ci.org/pktahinduka/weConnect)
-[![Coverage Status](https://coveralls.io/repos/github/pktahinduka/weConnect/badge.svg?branch=master)](https://coveralls.io/github/pktahinduka/weConnect?branch=master)
+[![Coverage Status](https://coveralls.io/repos/github/pktahinduka/shopeasy-flask-rest-api/badge.svg?branch=TravisCI-Test)](https://coveralls.io/github/pktahinduka/shopeasy-flask-rest-api?branch=TravisCI-Test)
 
 # weConnect
 weConnect is a platform that allows users to create and expose businesses to the world, while potential clients log in to view and review the businesses. weConnect is enriched with a Python backend and a ReactJS frontend as the view in the MVC model adapted for the project. It also uses Postgres Database for data storage and retrieval. 
