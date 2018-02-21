@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/pktahinduka/weConnect.svg?branch=travisCI)](https://travis-ci.org/pktahinduka/weConnect)
+[![Build Status](https://travis-ci.org/pktahinduka/weConnect.svg?branch=master)](https://travis-ci.org/pktahinduka/weConnect)
 [![Coverage Status](https://coveralls.io/repos/github/NaiRobley/bucketlist/badge.svg?branch=develop)](https://coveralls.io/github/NaiRobley/bucketlist?branch=develop)
 
 # weConnect
