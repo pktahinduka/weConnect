@@ -89,9 +89,6 @@ $ (your_environment_name) python manage.py db upgrade
     
      - python manage.py cov
 
-
-### Specifications for the weConnect API
-
 ### Specifications for the weConnect API
 ```
 ENDPOINT                                             FUNCTIONALITY                          PUBLIC ACCESS
