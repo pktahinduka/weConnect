@@ -2,7 +2,12 @@
 [![Coverage Status](https://coveralls.io/repos/github/NaiRobley/bucketlist/badge.svg?branch=develop)](https://coveralls.io/github/NaiRobley/bucketlist?branch=develop)
 
 # weConnect
-weConnect is a platform that allows users to create and expose businesses to the world, while potential clients log in to view and review the businesses. weConnect is enriched with a Python backend and a ReactJS frontend as the view in the MVC model adapted for the project. It also uses Postgres Database for data storage and retrieval. 
+weConnect is a platform that allows users to create and expose businesses to the world, while potential clients log in to view and review the businesses. weConnect is enriched with a Python backend and a ReactJS frontend as the view in the MVC model adapted for the project. It also uses Postgres Database for data storage and retrieval.
+
+#### weConnect Screenshots
+![alt text](screenshots/weconnectlogin.PNG)
+
+![alt text](screenshots/weconnectbz.PNG) 
 
 ## Getting Started
 
