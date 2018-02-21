@@ -15,7 +15,7 @@ class TestReviewService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -25,10 +25,11 @@ class TestReviewService(BaseTestCase):
 
         with self.client:
             response = self.client.post(
-                '/reviews',
+                '/api/businesses/1/reviews',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode())['auth_token']),
                 data=json.dumps(dict(
+                    business_id='1',
                     business_name='Drarter Homes',
                     review_text = 'I like the idea.',
                     created_by ='stillPeter'
@@ -47,7 +48,7 @@ class TestReviewService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -57,7 +58,7 @@ class TestReviewService(BaseTestCase):
 
         with self.client:
             response = self.client.post(
-            '/reviews',
+            '/api/businesses/1/reviews',
             headers=dict(Authorization='Bearer ' + json.loads(
                 resp_login.data.decode())['auth_token']),
             data=json.dumps(dict()),
@@ -73,7 +74,7 @@ class TestReviewService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -82,7 +83,7 @@ class TestReviewService(BaseTestCase):
             )
         with self.client:
             response = self.client.post(
-            '/reviews',
+            '/api/businesses/1/reviews',
             headers=dict(Authorization='Bearer ' + json.loads(
                 resp_login.data.decode())['auth_token']),
             data=json.dumps(dict(review_text='I like the idea.')),
@@ -93,84 +94,12 @@ class TestReviewService(BaseTestCase):
         self.assertIn('Invalid payload.', data['message'])
         self.assertIn('fail', data['status'])
 
-    def test_add_review_duplicate_review(self):
-        """ Ensure error is thrown if the review already exists."""
-        add_user('test', 'test@test.com', 'test')
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps(dict(
-                    email='test@test.com',
-                    password='test'
-                )),
-                content_type='application/json'
-            )
-        with self.client:
-            self.client.post(
-            '/reviews',
-            headers=dict(Authorization='Bearer ' + json.loads(
-                resp_login.data.decode())['auth_token']),
-            data=json.dumps(dict(
-                business_name='Drarter Homes',
-                review_text = 'I like the idea.',
-                created_by ='stillPeter'
-            )),
-            content_type='application/json',
-        )
-            response = self.client.post(
-            '/reviews',
-            headers=dict(Authorization='Bearer ' + json.loads(
-                resp_login.data.decode())['auth_token']),
-            data=json.dumps(dict(
-                business_name='Drarter Homes',
-                review_text = 'I like the idea.',
-                created_by ='stillPeter'
-            )),
-            content_type='application/json',
-        )
-        
-        data = json.loads(response.data.decode())
-        self.assertEqual(response.status_code, 400)
-        self.assertIn('Sorry. Someone already posted this exact review.', data['message'])
-        self.assertIn('fail', data['status'])
-
-    def test_all_reviews(self):
-        """Ensure get all reviews behaves correctly."""
-        add_user('test', 'test@test.com', 'test')
-        with self.client:
-            resp_login = self.client.post(
-                '/auth/login',
-                data=json.dumps(dict(
-                    email='test@test.com',
-                    password='test'
-                )),
-                content_type='application/json'
-            )
-        add_review('Drarter Homes', 'Cool Stuff.','stillPeter')
-        add_review('AfroDjango', 'Dream in Python','fletcher')
-        with self.client:
-            response = self.client.get('/reviews',
-                       headers=dict(Authorization='Bearer ' + json.loads(
-                resp_login.data.decode())['auth_token']))
-            data = json.loads(response.data.decode())
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(len(data['data']['reviews']), 2)
-            self.assertTrue('created_at' in data['data']['reviews'][0])
-            self.assertTrue('created_at' in data['data']['reviews'][1])
-            """self.assertIn('michael', data['data']['users'][0]['username'])
-            self.assertIn(
-            'michael@realpython.com', data['data']['users'][0]['email'])
-            self.assertIn('fletcher', data['data']['users'][1]['username'])
-            self.assertIn(
-            'fletcher@realpython.com', data['data']['users'][1]['email'])
-            self.assertIn('success', data['status']) """   
-
     def test_add_review_invalid_json_keys_no_author(self):
         """Ensure error is thrown if the JSON object does not have an author."""
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -179,10 +108,11 @@ class TestReviewService(BaseTestCase):
             )
         with self.client:
             response = self.client.post(
-                '/reviews',
+                '/api/businesses/1/reviews',
             headers=dict(Authorization='Bearer ' + json.loads(
                 resp_login.data.decode())['auth_token']),
                 data=json.dumps(dict(
+                    business_id='1',
                     business_name='Drarter Homes',
                     review_text='I like the idea.')),
                 content_type='application/json',

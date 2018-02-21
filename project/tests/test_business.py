@@ -18,7 +18,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -28,7 +28,7 @@ class TestBusinessService(BaseTestCase):
 
         with self.client:
             response = self.client.post(
-                '/businesses',
+                '/api/businesses',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -53,7 +53,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -63,7 +63,7 @@ class TestBusinessService(BaseTestCase):
 
         with self.client:
             response = self.client.post(
-                '/businesses',
+                '/api/businesses',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -81,7 +81,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -91,7 +91,7 @@ class TestBusinessService(BaseTestCase):
 
         with self.client:
             response = self.client.post(
-                '/businesses',
+                '/api/businesses',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -113,7 +113,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -122,7 +122,7 @@ class TestBusinessService(BaseTestCase):
             )
         with self.client:
             response = self.client.post(
-                '/businesses',
+                '/api/businesses',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -139,7 +139,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -148,7 +148,7 @@ class TestBusinessService(BaseTestCase):
             )
         with self.client:
             self.client.post(
-            '/businesses',
+            '/api/businesses',
             headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -162,7 +162,7 @@ class TestBusinessService(BaseTestCase):
             content_type='application/json',
         )
             response = self.client.post(
-            '/businesses',
+            '/api/businesses',
             headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']),
@@ -190,7 +190,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -199,7 +199,7 @@ class TestBusinessService(BaseTestCase):
             )
 
         with self.client:
-            response = self.client.get(f'/businesses/{business.id}',
+            response = self.client.get(f'/api/businesses/{business.id}',
                        headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode()
                     )['auth_token']))
@@ -216,7 +216,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -225,7 +225,7 @@ class TestBusinessService(BaseTestCase):
             )
 
         with self.client:
-            response = self.client.get('/businesses/nada',
+            response = self.client.get('/api/businesses/nada',
                 headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode())['auth_token']))
             data = json.loads(response.data.decode())
@@ -239,7 +239,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -248,7 +248,7 @@ class TestBusinessService(BaseTestCase):
             )
 
         with self.client:
-            response = self.client.get('/businesses/911',
+            response = self.client.get('/api/businesses/911',
                         headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode())['auth_token']))
             data = json.loads(response.data.decode())
@@ -262,7 +262,7 @@ class TestBusinessService(BaseTestCase):
         add_user('test', 'test@test.com', 'test')
         with self.client:
             resp_login = self.client.post(
-                '/auth/login',
+                '/api/auth/login',
                 data=json.dumps(dict(
                     email='test@test.com',
                     password='test'
@@ -275,7 +275,7 @@ class TestBusinessService(BaseTestCase):
         add_business('weConnect', 'Services','Freedom City Mall', 
             'Connecting businesses with client feedback', 'stillPeter')
         with self.client:
-            response = self.client.get('/businesses',
+            response = self.client.get('/api/businesses',
                         headers=dict(Authorization='Bearer ' + json.loads(
                         resp_login.data.decode())['auth_token']))
             data = json.loads(response.data.decode())
@@ -290,3 +290,97 @@ class TestBusinessService(BaseTestCase):
             self.assertEqual(
             'Services', data['data']['businesses'][1]['business_category'])
             self.assertIn('success', data['status'])
+
+    def test_business_editing(self):
+        """
+        Test that we can edit the name of a business
+        """
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
+        with self.client:
+            response = self.client.post(
+                '/api/businesses',
+                headers=dict(Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']),
+                data=json.dumps(dict(
+                    business_name='Drarter Homes',
+                    business_category = 'Merchandise',
+                    business_addr='Garden City Mall',
+                    business_desc='Dealers in smart home technology.',
+                    created_by='junekid'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+
+        with self.client:
+            response = self.client.put(
+                '/api/businesses/1',
+                headers=dict(Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']),
+                data=json.dumps(dict(
+                    business_name='Drarter Homes, Inc.',
+                    business_category = 'Merchandise Services',
+                    business_addr='Garden City Mall',
+                    business_desc='Dealers in smart home technology.',
+                    created_by='junekid'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+
+
+    def test_business_deletion(self):
+        """
+        Test that a business list can be deleted
+        """
+        add_user('test', 'test@test.com', 'test')
+        with self.client:
+            resp_login = self.client.post(
+                '/api/auth/login',
+                data=json.dumps(dict(
+                    email='test@test.com',
+                    password='test'
+                )),
+                content_type='application/json'
+            )
+        with self.client:
+            response = self.client.post(
+                '/api/businesses',
+                headers=dict(Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']),
+                data=json.dumps(dict(
+                    business_name='Drarter Homes, Inc.',
+                    business_category = 'Merchandise Services',
+                    business_addr='Garden City Mall',
+                    business_desc='Dealers in smart home technology.',
+                    created_by='junekid'
+                )),
+                content_type='application/json'
+            )
+            data = json.loads(response.data.decode())
+            self.assertEqual(response.status_code, 201)
+
+        # Confirm that the business has been deleted
+        with self.client:
+            response = self.client.delete(
+                '/api/businesses/1',
+                headers=dict(Authorization='Bearer ' + json.loads(
+                        resp_login.data.decode()
+                    )['auth_token']))
+            self.assertEqual(response.status_code, 204)
+
+
