@@ -1,15 +1,53 @@
 # project/api/views.py
 
-from flask import Blueprint, jsonify, request, render_template
+from functools import wraps
+
+from flask import Blueprint, jsonify, request, render_template, make_response
 from project.api.user_models import User
-from project.api.user_models import BlacklistToken
 from project.api.business_models import Business
 from project.api.review_models import Review
-from project.api.decorator import token_required
 from project import db
 from sqlalchemy import exc, or_
 
 users_blueprint = Blueprint('users_blueprint', __name__, template_folder='./templates')
+
+def token_required(func):
+    @wraps(func)
+    def func_wrapper(*args, **kwargs):
+        # Check for the authentication token
+        auth_header = request.headers.get("Authorization")
+        if not auth_header:
+            # If there's no token provided
+            response = {
+                "message": "Please register or login to access this resource!"
+            }
+            return make_response(jsonify(response)), 401
+
+        else:
+            access_token = auth_header.split(" ")[1]
+            if access_token:
+                # Attempt to decode the token and get the user id
+                user_id = User.decode_auth_token(access_token)
+
+                if isinstance(user_id, str):
+                    # User id does not exist so payload is an error message
+                    message = user_id
+                    response = jsonify({
+                        "message": message
+                    })
+
+                    response.status_code = 401
+                    return response
+
+                else:
+                    return func(user_id=user_id, *args, **kwargs)
+            else:
+                response = {
+                    "message": "Register or log in to access this resource"
+                }
+                return make_response(jsonify(response)), 401
+
+    return func_wrapper
 
 @users_blueprint.route('/home')
 def main():
@@ -74,7 +112,7 @@ def add_user():
         }
         return jsonify(response_object), 400
 
-@users_blueprint.route('/businesses', methods=['POST'])
+@users_blueprint.route('/api/businesses', methods=['POST'])
 @token_required
 def add_business(user_id):
     post_data = request.get_json()
@@ -121,9 +159,9 @@ def add_business(user_id):
         }
         return jsonify(response_object), 400
 
-@users_blueprint.route('/reviews', methods=['POST'])
+@users_blueprint.route('/api/businesses/<businessId>/reviews', methods=['POST'])
 @token_required
-def add_review(user_id):
+def add_review(user_id, businessId):
     post_data = request.get_json()
     if not post_data:
         response_object = {
@@ -131,15 +169,18 @@ def add_review(user_id):
             'message': 'Invalid payload.'
         }
         return jsonify(response_object), 400
+    id = post_data.get('id')
+    business_id = post_data.get('business_id')
     business_name = post_data.get('business_name')
     review_text = post_data.get('review_text')
     created_by = post_data.get('created_by')
     created_at = post_data.get('created_at')
 
     try:
-        review = Review.query.filter_by(review_text=review_text).first()
+        review = Review.query.filter_by(id=id).first()
         if not review:
             db.session.add(Review(
+                business_id=business_id,
                 business_name=business_name,
                 review_text=review_text,
                 created_by=created_by,
@@ -150,12 +191,7 @@ def add_review(user_id):
                 'message': f'A review for {business_name} was added!'
             }
             return jsonify(response_object), 201
-        else:
-            response_object = {
-                'status': 'fail',
-                'message': 'Sorry. Someone already posted this exact review.'
-            }
-            return jsonify(response_object), 400
+
     except (exc.IntegrityError, ValueError) as e:
         db.session.rollback()
         response_object = {
@@ -190,7 +226,7 @@ def get_single_user(user_id):
         return jsonify(response_object), 404
 
 
-@users_blueprint.route('/businesses/<biz_id>', methods=['GET'])
+@users_blueprint.route('/api/businesses/<biz_id>', methods=['GET'])
 @token_required
 def get_single_business(user_id, biz_id):
     """Get single business details"""
@@ -218,6 +254,39 @@ def get_single_business(user_id, biz_id):
     except ValueError:
         return jsonify(response_object), 404
 
+@users_blueprint.route('/api/businesses/<businessId>/reviews', methods=['GET'])
+@token_required
+def get_single_business_reviews(user_id, businessId):
+    """Get all reviews"""
+    reviews = Review.query.filter_by(business_id = businessId)
+    reviews_list = []
+    for review in reviews:
+        review_object = {
+            'id': review.id,
+            'business_id': review.business_id,
+            'business_name': review.business_name,
+            'review_text': review.review_text,
+            'created_by': review.created_by,
+            'created_at': review.created_at
+        }
+        reviews_list.append(review_object)
+
+    if reviews_list == []:
+        response_object = {
+            'status': 'sucess',
+            'message': 'This business currently has no reviews.'
+        }    
+        return jsonify(response_object), 200
+    else:
+        response_object = {
+            'status': 'success',
+            'data': {
+                'reviews': reviews_list
+            }
+        }
+        return jsonify(response_object), 200
+
+
 @users_blueprint.route('/users', methods=['GET'])
 def get_all_users():
     """Get all users"""
@@ -239,7 +308,7 @@ def get_all_users():
     }
     return jsonify(response_object), 200
 
-@users_blueprint.route('/businesses', methods=['GET'])
+@users_blueprint.route('/api/businesses', methods=['GET'])
 @token_required
 def get_all_businesses(user_id):
     """Get all businesses"""
@@ -264,30 +333,7 @@ def get_all_businesses(user_id):
     }
     return jsonify(response_object), 200
 
-@users_blueprint.route('/reviews', methods=['GET'])
-@token_required
-def get_all_reviews(user_id):
-    """Get all reviews"""
-    reviews = Review.query.all()
-    reviews_list = []
-    for review in reviews:
-        review_object = {
-            'id': review.id,
-            'business_name': review.business_name,
-            'review_text': review.review_text,
-            'created_by': review.created_by,
-            'created_at': review.created_at
-        }
-        reviews_list.append(review_object)
-    response_object = {
-        'status': 'success',
-        'data': {
-            'reviews': reviews_list
-        }
-    }
-    return jsonify(response_object), 200
-
-@users_blueprint.route("/businesses/<biz_id>", methods=['PUT','DELETE'])
+@users_blueprint.route("/api/businesses/<biz_id>", methods=['PUT', 'DELETE'])
 @token_required
 def manipulate_a_business(biz_id, user_id, *args, **kwargs):
     business = Business.query.filter_by(id=biz_id).first()
@@ -305,20 +351,22 @@ def manipulate_a_business(biz_id, user_id, *args, **kwargs):
         'message': 'A business has been successfully deleted'
          }
     
-        return jsonify(response_object), 204
+        return jsonify(response_object), 204 
 
     elif request.method == "PUT":
         all_businesses = Business.query.filter_by(id=biz_id).first()
 
-        name = request.get_json()['name']
-        category = request.get_json()['category']
-        addr = request.get_json()['addr']
-        desc = request.get_json()['desc']
+        business_name = request.get_json()['business_name']
+        business_category = request.get_json()['business_category']
+        business_addr = request.get_json()['business_addr']
+        business_desc = request.get_json()['business_desc']
+        created_by = request.get_json()['created_by']
 
-        business.business_name = name
-        business.business_category = category
-        business.business_addr = addr
-        business.business_desc = desc
+        business.business_name = business_name
+        business.business_category = business_category
+        business.business_addr = business_addr
+        business.business_desc = business_desc
+        business.created_by = created_by
 
         business.save()
 
@@ -340,6 +388,9 @@ def manipulate_a_business(biz_id, user_id, *args, **kwargs):
                                 })
         response.status_code = 409
         return response
+
+
+
 
 
 

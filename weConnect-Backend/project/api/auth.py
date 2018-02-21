@@ -4,7 +4,7 @@ from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
 from project import bcrypt, db
-from project.api.user_models import User, BlacklistToken
+from project.api.user_models import User
 
 
 from sqlalchemy import exc, or_
@@ -13,7 +13,7 @@ import time
 
 auth_blueprint = Blueprint('auth', __name__)
 
-@auth_blueprint.route('/auth/register', methods=['POST'])
+@auth_blueprint.route('/api/auth/register', methods=['POST'])
 def register_user():
     # get post data
     post_data = request.get_json()
@@ -53,7 +53,7 @@ def register_user():
         db.session.rollback()
         return jsonify(response_object), 400
 
-@auth_blueprint.route('/auth/login', methods=['POST'])
+@auth_blueprint.route('/api/auth/login', methods=['POST'])
 def login_user():
     # get post data
     post_data = request.get_json()
@@ -83,7 +83,7 @@ def login_user():
         response_object['message'] = 'Try again.'     
         return jsonify(response_object), 500
 
-@auth_blueprint.route('/auth/logout', methods=['GET'])
+@auth_blueprint.route('/api/auth/logout', methods=['GET'])
 def logout_user():
     # get auth token
     auth_header = request.headers.get('Authorization')
@@ -104,7 +104,7 @@ def logout_user():
     else:
         return jsonify(response_object), 403
 
-@auth_blueprint.route('/auth/status', methods=['GET'])
+@auth_blueprint.route('/api/auth/status', methods=['GET'])
 def get_user_status():
     # get auth token
     auth_header = request.headers.get('Authorization')

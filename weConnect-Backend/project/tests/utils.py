@@ -32,8 +32,9 @@ def add_business(business_name, business_category, business_addr, business_desc,
     db.session.commit()
     return business
 
-def add_review(business_name, review_text, created_by, created_at=datetime.datetime.utcnow()):
+def add_review(business_id, business_name, review_text, created_by, created_at=datetime.datetime.utcnow()):
     review = Review(
+        business_id = business_id,
         business_name = business_name,
         review_text = review_text,
         created_by = created_by,
