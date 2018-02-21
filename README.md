@@ -91,20 +91,24 @@ $ (your_environment_name) python manage.py db upgrade
 
 
 ### Specifications for the weConnect API
-```
-ENDPOINT                                         FUNCTIONALITY                          PUBLIC ACCESS
 
-POST    /auth/login                              Logs a user in                         TRUE
-POST    /auth/register                           Register a user                        TRUE
-POST    /businesses                              Create a new business                  FALSE
-GET     /businesses                              List all the created businesses        FALSE
-GET     /businesses/<biz_id>                     Get a single business                  FALSE 
-PUT     /businesses/<biz_id>                     Update this business                   FALSE
-DELETE  /businesses/<biz_id>                     Delete a particular business           FALSE
-POST    /reviews                                 List all reviews about businesses      FALSE
-POST    /users                                   Create a new user                      FALSE
-GET     /users                                   Get all users                          FALSE
-GET     /users/<user_id>                         Get a particular user                  FALSE
+### Specifications for the weConnect API
+```
+ENDPOINT                                             FUNCTIONALITY                          PUBLIC ACCESS
+
+POST    /api/auth/login                              Logs a user in                         TRUE
+POST    /api/auth/register                           Register a user                        TRUE
+GET     /api/auth/status                             Check if a user is logged in           TRUE
+POST    /api/auth/reset-password                     Reset user password                    TRUE
+POST    /api/auth/logout                             Log a user out                         FALSE
+POST    /api/businesses                              Create a new business                  FALSE
+GET     /api/businesses                              List all the created businesses        FALSE
+GET     /api/businesses/<businessId>                 Get a single business                  FALSE 
+PUT     /api/businesses/<businessId>                 Update this business                   FALSE
+DELETE  /api/businesses/<businessId>                 Delete a particular business           FALSE
+POST    /api/businesses/<businessId>/reviews         Create a review about a business       FALSE
+GET     /api/businesses/<businessId>/reviews         List all reviews about a business      FALSE
+
 ```
 
 
