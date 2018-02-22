@@ -19,5 +19,6 @@ before_script:
 
 script:
   - python manage.py cov 
+  - coverage run --source="api/","tests/" -m unittest
 after_success:
   coveralls
