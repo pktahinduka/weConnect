@@ -18,7 +18,7 @@ before_script:
   - python manage.py recreate_db
 
 script:
-  - python manage.py cov 
+  - nosetests --with-coverage --cover-package=application
 
 after_success:
   coveralls
