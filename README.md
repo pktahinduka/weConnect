@@ -86,13 +86,18 @@ $ (your_environment_name) python manage.py db upgrade
      
 #### Step 4: Run the application 
      
-     - python manage.py runserver
+     - python manage.py runserver -p 5555
 
-#### Step 5: Run tests for the routes and configurations
+#### Step 5: (Optional) Run the ReactJS front end application 
+     
+     - Follow the instructions at [weConnect-ReactJs](https://github.com/pktahinduka/weConnect-ReactJs).
+
+
+#### Step 6: Run tests for the routes and configurations
     
      - python manage.py test
 
-#### Step 6: Run coverage for the routes and configurations
+#### Step 7: Run coverage for the routes and configurations
     
      - python manage.py cov
 
