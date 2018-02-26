@@ -68,7 +68,7 @@ $ createdb users_dev
 $ createdb users_test
 ```
 
-For other databases modify the `project/config.py`
+For other databases modify the `instance/config.py`
 
 Migrations:
 ```
@@ -76,18 +76,26 @@ $ (your_environment_name) python manage.py db init
 $ (your_environment_name) python manage.py db migrate
 $ (your_environment_name) python manage.py db upgrade
 ```    
+
+#### Step 3: Set environment variables 
      
-#### Step 3: Run the application 
+     - set APP_SETTINGS=project.config.DevelopmentConfig
+     - set DATABASE_URL=postgres://postgres:<your_postgres_password>@localhost:5432/users_dev
+     - set DATABASE_TEST_URL=postgres://postgres:<your_postgres_password>@localhost:5432/users_test
+     - set SECRET_KEY=change_me
+     
+#### Step 4: Run the application 
      
      - python manage.py runserver
 
-#### Step 4: Run tests for the routes and configurations
+#### Step 5: Run tests for the routes and configurations
     
      - python manage.py test
 
-#### Step 5: Run coverage for the routes and configurations
+#### Step 6: Run coverage for the routes and configurations
     
      - python manage.py cov
+
 
 ### Specifications for the weConnect API
 ```
@@ -127,3 +135,5 @@ GET     /api/businesses/<businessId>/reviews         List all reviews about a bu
 ## Acknowledgments
 
 * Google Inc.
+
+
