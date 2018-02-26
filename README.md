@@ -88,10 +88,7 @@ $ (your_environment_name) python manage.py db upgrade
      
      - python manage.py runserver -p 5555
 
-#### Step 5: (Optional) Run the ReactJS front end application 
-     
-     - Follow the instructions at [weConnect-ReactJs](https://github.com/pktahinduka/weConnect-ReactJs).
-
+## Step 5: (Optional) Run the ReactJS front end application at [weConnect-ReactJs](https://github.com/pktahinduka/weConnect-ReactJs)
 
 #### Step 6: Run tests for the routes and configurations
     
