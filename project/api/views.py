@@ -7,9 +7,11 @@ from project.api.user_models import User
 from project.api.business_models import Business
 from project.api.review_models import Review
 from project import db
-from sqlalchemy import exc, or_
+from sqlalchemy import exc
 
-users_blueprint = Blueprint('users_blueprint', __name__, template_folder='./templates')
+users_blueprint = Blueprint(
+    'users_blueprint', __name__, template_folder='./templates')
+
 
 def token_required(func):
     @wraps(func)
@@ -49,9 +51,11 @@ def token_required(func):
 
     return func_wrapper
 
+
 @users_blueprint.route('/home')
 def main():
     return render_template('shopeasy_index.html')
+
 
 @users_blueprint.route('/', methods=['GET', 'POST'])
 def index():
@@ -62,16 +66,16 @@ def index():
         db.session.add(User(username=username, email=email, password=password))
         db.session.commit()
     users = User.query.all()
-    return render_template('index.html', users = users)
+    return render_template('index.html', users=users)
 
 
-
-@users_blueprint.route('/ping', methods = ['GET'])
+@users_blueprint.route('/ping', methods=['GET'])
 def ping_pong():
     return jsonify({
-    'status' : 'success',
-    'message' : 'pong!'
+        'status': 'success',
+        'message': 'pong!'
     })
+
 
 @users_blueprint.route('/users', methods=['POST'])
 def add_user():
@@ -112,6 +116,7 @@ def add_user():
         }
         return jsonify(response_object), 400
 
+
 @users_blueprint.route('/api/businesses', methods=['POST'])
 @token_required
 def add_business(user_id):
@@ -130,7 +135,8 @@ def add_business(user_id):
     created_at = post_data.get('created_at')
 
     try:
-        business = Business.query.filter_by(business_name=business_name).first()
+        business = Business.query.filter_by(
+            business_name=business_name).first()
         if not business:
             db.session.add(Business(
                 business_name=business_name,
@@ -159,7 +165,8 @@ def add_business(user_id):
         }
         return jsonify(response_object), 400
 
-@users_blueprint.route('/api/businesses/<businessId>/reviews', methods=['POST'])
+
+@users_blueprint.route('/api/businesses/<businessId>/reviews',methods=['POST'])
 @token_required
 def add_review(user_id, businessId):
     post_data = request.get_json()
@@ -216,9 +223,9 @@ def get_single_user(user_id):
             response_object = {
                 'status': 'success',
                 'data': {
-                  'username': user.username,
-                  'email': user.email,
-                  'created_at': user.created_at
+                    'username': user.username,
+                    'email': user.email,
+                    'created_at': user.created_at
                 }
             }
             return jsonify(response_object), 200
@@ -242,23 +249,24 @@ def get_single_business(user_id, biz_id):
             response_object = {
                 'status': 'success',
                 'data': {
-                  'business_name': business.business_name,
-                  'business_category': business.business_category,
-                  'business_addr': business.business_addr,
-                  'business_desc': business.business_desc,
-                  'created_by': business.created_by,
-                  'created_at': business.created_at
+                    'business_name': business.business_name,
+                    'business_category': business.business_category,
+                    'business_addr': business.business_addr,
+                    'business_desc': business.business_desc,
+                    'created_by': business.created_by,
+                    'created_at': business.created_at
                 }
             }
             return jsonify(response_object), 200
     except ValueError:
         return jsonify(response_object), 404
 
+
 @users_blueprint.route('/api/businesses/<businessId>/reviews', methods=['GET'])
 @token_required
 def get_single_business_reviews(user_id, businessId):
     """Get all reviews"""
-    reviews = Review.query.filter_by(business_id = businessId)
+    reviews = Review.query.filter_by(business_id=businessId)
     reviews_list = []
     for review in reviews:
         review_object = {
@@ -275,7 +283,7 @@ def get_single_business_reviews(user_id, businessId):
         response_object = {
             'status': 'sucess',
             'message': 'This business currently has no reviews.'
-        }    
+        }
         return jsonify(response_object), 200
     else:
         response_object = {
@@ -308,6 +316,7 @@ def get_all_users():
     }
     return jsonify(response_object), 200
 
+
 @users_blueprint.route('/api/businesses', methods=['GET'])
 @token_required
 def get_all_businesses(user_id):
@@ -333,28 +342,28 @@ def get_all_businesses(user_id):
     }
     return jsonify(response_object), 200
 
+
 @users_blueprint.route("/api/businesses/<biz_id>", methods=['PUT', 'DELETE'])
 @token_required
 def manipulate_a_business(biz_id, user_id, *args, **kwargs):
     business = Business.query.filter_by(id=biz_id).first()
     if not business:
         response_object = {
-        'status': 'fail',
-        'message': 'Business does not exist'
+            'status': 'fail',
+            'message': 'Business does not exist'
         }
         return jsonify(response_object), 404
 
     if request.method == "DELETE":
         business.delete()
         response_object = {
-        'status': 'success',
-        'message': 'A business has been successfully deleted'
-         }
-    
-        return jsonify(response_object), 204 
+            'status': 'success',
+            'message': 'A business has been successfully deleted'
+        }
+
+        return jsonify(response_object), 204
 
     elif request.method == "PUT":
-        all_businesses = Business.query.filter_by(id=biz_id).first()
 
         business_name = request.get_json()['business_name']
         business_category = request.get_json()['business_category']
@@ -374,7 +383,7 @@ def manipulate_a_business(biz_id, user_id, *args, **kwargs):
             "id": business.id,
             "name": business.business_name,
             "category": business.business_category,
-            "address": business.business_addr, 
+            "address": business.business_addr,
             "date_created": business.created_at,
             "created_by": business.created_by
         })
@@ -385,15 +394,6 @@ def manipulate_a_business(biz_id, user_id, *args, **kwargs):
     else:
         response = jsonify({
             "message": "There is an existing business with the same name. Try again"
-                                })
+        })
         response.status_code = 409
         return response
-
-
-
-
-
-
-    
-
-

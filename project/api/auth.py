@@ -1,17 +1,13 @@
-#project/api/auth.py
+# project/api/auth.py
 
-from flask import Blueprint, request, make_response, jsonify
-from flask.views import MethodView
-
+from flask import Blueprint, request, jsonify
 from project import bcrypt, db
 from project.api.user_models import User
-
-
 from sqlalchemy import exc, or_
-import time
 
 
 auth_blueprint = Blueprint('auth', __name__)
+
 
 @auth_blueprint.route('/api/auth/register', methods=['POST'])
 def register_user():
@@ -53,6 +49,7 @@ def register_user():
         db.session.rollback()
         return jsonify(response_object), 400
 
+
 @auth_blueprint.route('/api/auth/login', methods=['POST'])
 def login_user():
     # get post data
@@ -80,10 +77,11 @@ def login_user():
             response_object['message'] = 'User does not exist.'
             return jsonify(response_object), 404
     except Exception as e:
-        response_object['message'] = 'Try again.'     
+        response_object['message'] = 'Try again.'
         return jsonify(response_object), 500
 
-@auth_blueprint.route('/api/auth/logout', methods=['GET'])
+
+@auth_blueprint.route('/api/auth/logout', methods=['POST'])
 def logout_user():
     # get auth token
     auth_header = request.headers.get('Authorization')
@@ -103,6 +101,7 @@ def logout_user():
             return jsonify(response_object), 401
     else:
         return jsonify(response_object), 403
+
 
 @auth_blueprint.route('/api/auth/status', methods=['GET'])
 def get_user_status():
