@@ -67,7 +67,7 @@ DAO.create({'business_name': 'Uzeland Inc.',
 
 @ns.route('/businesses')
 class BusinessList(Resource):
-    '''Shows a list of all todos, and lets you POST to add new businesses'''
+    '''Shows a list of all businesses, and lets you POST to add new businesses'''
     @ns.doc('list_businesses')
     @ns.marshal_list_with(business)
     def get(self):
@@ -86,7 +86,7 @@ class BusinessList(Resource):
 @ns.response(404, 'Business not found')
 @ns.param('id', 'The business identifier')
 class Business(Resource):
-    '''Show a single todo item and lets you delete them'''
+    '''Show a single business and lets you delete them'''
     @ns.doc('get_business')
     @ns.marshal_with(business)
     def get(self, id):
@@ -96,14 +96,14 @@ class Business(Resource):
     @ns.doc('delete_business')
     @ns.response(204, 'Business deleted')
     def delete(self, id):
-        '''Delete a task given its identifier'''
+        '''Delete a business given its identifier'''
         DAO.delete(id)
         return '', 204
 
     @ns.expect(business)
     @ns.marshal_with(business)
     def put(self, id):
-        '''Update a task given its identifier'''
+        '''Update a business given its identifier'''
         return DAO.update(id, api.payload)
 
 
