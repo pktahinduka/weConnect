@@ -9,7 +9,7 @@
 
 import os
 
-from flask import Flask, jsonify
+from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -22,6 +22,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 
+
 def create_app():
 
     # instantiate the app
@@ -29,6 +30,7 @@ def create_app():
 
     # enable CORS
     CORS(app)
+
     # set config
     app_settings = os.getenv('APP_SETTINGS')
     app.config.from_object(app_settings)
