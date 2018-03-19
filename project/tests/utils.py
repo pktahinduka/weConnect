@@ -5,9 +5,9 @@ import datetime
 
 
 from project import db
-from project.api.user_models import User
-from project.api.business_models import Business
-from project.api.review_models import Review
+from project.api.users.user_models import User
+from project.api.businesses.business_models import Business
+from project.api.reviews.review_models import Review
 
 
 def add_user(username, email, password, created_at=datetime.datetime.utcnow()):

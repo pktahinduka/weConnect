@@ -2,15 +2,14 @@
 
 from functools import wraps
 
-from flask import Blueprint, jsonify, request, render_template, make_response
-from project.api.user_models import User
-from project.api.business_models import Business
-from project.api.review_models import Review
+from flask import Blueprint, jsonify, request
+from project.api.users.user_models import User
+from project.api.businesses.business_models import Business
+from project.api.reviews.review_models import Review
 from project import db
 from sqlalchemy import exc
 
-users_blueprint = Blueprint(
-    'users_blueprint', __name__, template_folder='./templates')
+users_blueprint = Blueprint('users_blueprint', __name__)
 
 
 def token_required(func):
@@ -50,31 +49,6 @@ def token_required(func):
                 return make_response(jsonify(response)), 401
 
     return func_wrapper
-
-
-@users_blueprint.route('/home')
-def main():
-    return render_template('shopeasy_index.html')
-
-
-@users_blueprint.route('/', methods=['GET', 'POST'])
-def index():
-    if request.method == 'POST':
-        username = request.form['username']
-        email = request.form['email']
-        password = request.form['password']
-        db.session.add(User(username=username, email=email, password=password))
-        db.session.commit()
-    users = User.query.all()
-    return render_template('index.html', users=users)
-
-
-@users_blueprint.route('/ping', methods=['GET'])
-def ping_pong():
-    return jsonify({
-        'status': 'success',
-        'message': 'pong!'
-    })
 
 
 @users_blueprint.route('/users', methods=['POST'])
@@ -166,7 +140,7 @@ def add_business(user_id):
         return jsonify(response_object), 400
 
 
-@users_blueprint.route('/api/businesses/<businessId>/reviews',methods=['POST'])
+@users_blueprint.route('/api/businesses/<businessId>/reviews', methods=['POST'])
 @token_required
 def add_review(user_id, businessId):
     post_data = request.get_json()
