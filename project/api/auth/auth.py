@@ -3,7 +3,6 @@
 from flask import Blueprint, request, jsonify
 from project import bcrypt, db
 from project.api.users.user_models import User
-from validate_email import validate_email
 from sqlalchemy import exc, or_
 
 
