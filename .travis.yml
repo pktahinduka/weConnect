@@ -8,17 +8,13 @@ service:
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
 
 before_script:
   - export APP_SETTINGS="project.config.TestingConfig"
   - export DATABASE_TEST_URL=postgresql://postgres:@localhost/users_test
-  - export SECRET_KEY=change_me
+  - export SECRET_KEY="change_me"
   - psql -c 'create database users_test;' -U postgres
   - python manage.py recreate_db
 
 script:
-  - python manage.py cov 
-
-after_success:
-  coveralls
+  - python manage.py test
